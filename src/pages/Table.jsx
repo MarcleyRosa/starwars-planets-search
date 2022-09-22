@@ -27,6 +27,9 @@ function StarWarsTable() {
       comparison: comparisonFilter,
       value: filterValue,
     }]));
+    setFilterComumn('population');
+    setComparisonFilter('maior que');
+    setFilterValue(0);
   };
 
   useEffect(() => {
@@ -87,10 +90,6 @@ function StarWarsTable() {
         >
           { filterOptions
             .map((option, i) => <option key={ i } value={ option }>{option}</option>)}
-          {/* <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option> */}
         </select>
         <select
           onChange={ ({ target: { value } }) => setComparisonFilter(value) }
