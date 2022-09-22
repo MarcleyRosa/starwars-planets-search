@@ -2,6 +2,9 @@ import React, { useContext, useState, useEffect } from 'react';
 import StarWarsContext from '../context/StarWarsContext';
 
 function StarWarsTable() {
+  const columnAll = [
+    'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water'];
+
   const { results } = useContext(StarWarsContext);
   const [filterName, setFilterName] = useState('');
   const [filterColumn, setFilterComumn] = useState('population');
@@ -12,8 +15,7 @@ function StarWarsTable() {
   const [inputFilterName, setInputFilterName] = useState(results);
 
   const [buttonFilter, setButtonFilter] = useState([]);
-  const [filterOptions, setFilterOptions] = useState([
-    'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water']);
+  const [filterOptions, setFilterOptions] = useState(columnAll);
 
   const handleClick = () => {
     const optionFilter = filterOptions.filter((opt) => opt !== filterColumn);
@@ -29,9 +31,21 @@ function StarWarsTable() {
     setFilterValue(0);
   };
 
+  const removeFilter = ({ target: { id } }) => {
+    console.log(id);
+    const filterRemova = buttonFilter.filter((filter) => filter.column !== id);
+    setButtonFilter(filterRemova);
+    setFilterOptions((prevState) => ([...prevState, id]));
+    setRenderFilters(results);
+  };
+
+  const removeAllFilters = () => {
+    setButtonFilter([]);
+    setFilterOptions(columnAll);
+  };
+
   useEffect(() => {
     setRenderFilters(results);
-    console.log('entreiaaaa');
   }, [results]);
 
   useEffect(() => {
@@ -43,6 +57,9 @@ function StarWarsTable() {
   useEffect(() => {
     buttonFilter.forEach((filt) => {
       let planFilter = [];
+
+      console.log(filt.comparison);
+      console.log(filt.column);
 
       switch (filt.comparison) {
       case 'maior que': planFilter = renderFilters
@@ -62,8 +79,6 @@ function StarWarsTable() {
       }
     });
   }, [buttonFilter]);
-
-  console.log(renderFilters);
 
   const changeFilter = buttonFilter.length === 0 ? inputFilterName : renderFilters;
 
@@ -115,7 +130,27 @@ function StarWarsTable() {
           Filtrar
         </button>
       </form>
-      <p>{`Filtr${filterName}`}</p>
+      { buttonFilter.map((filter, i) => (
+        <div data-testid="filter" key={ i }>
+          <p>{ `${filter.column} ${filter.comparison} ${filter.value}` }</p>
+          <button
+            onClick={ removeFilter }
+            id={ filter.column }
+            type="button"
+          >
+            Excluir
+
+          </button>
+        </div>))}
+      { buttonFilter.length && (
+        <button
+          onClick={ removeAllFilters }
+          data-testid="button-remove-filters"
+          type="button"
+        >
+          Remover
+
+        </button>)}
       <table>
         <thead>
           <tr>

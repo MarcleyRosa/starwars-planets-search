@@ -3,6 +3,8 @@ import { render, screen, waitFor } from '@testing-library/react';
 import App from '../App';
 import userEvent from '@testing-library/user-event';
 import requestData from './helps/data'
+import mockFetch from '../../cypress/mocks/fetch';
+
 
 
 describe('Tests components', () => {
@@ -15,8 +17,9 @@ describe('Tests components', () => {
 
 test('I am your test', async () => {
   // global.fetch = jest.fn(async () => Promise.resolve({
-  //     json: async () => Promise.resolve(requestData),
+  //     json: async () => Promise.resolve(testData),
   //   }));
+  mockFetch()
     render(<App />);
 
   const textElement = screen.getByText(/rotation period/i);
