@@ -18,9 +18,6 @@ function StarWarsTable() {
   const handleClick = () => {
     const optionFilter = filterOptions.filter((opt) => opt !== filterColumn);
     setFilterOptions(optionFilter);
-    // const equalObj = buttonFilter
-    //   .some((obj) => obj.column === filterColumn
-    //  && obj.comparison === comparisonFilter && obj.value === filterValue);
 
     setButtonFilter((prevState) => ([...prevState, {
       column: filterColumn,
