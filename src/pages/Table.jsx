@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import StarWarsContext from '../context/StarWarsContext';
 
 function StarWarsTable() {
@@ -7,53 +7,55 @@ function StarWarsTable() {
   const [filterColumn, setFilterComumn] = useState('population');
   const [comparisonFilter, setComparisonFilter] = useState('maior que');
   const [filterValue, setFilterValue] = useState(0);
-  // const [renderFilters, setRenderFilters] = useState(false);
 
-  const [buttonFilter, setButtonFilter] = useState({
-    column: 'population',
-    comparison: 'maior que',
-    value: 0,
-  });
+  const [renderFilters, setRenderFilters] = useState([]);
+  const [inputFilterName, setInputFilterName] = useState(results);
 
-  const filterNumberSwitch = () => {
-    const switchColumn = (result) => {
-      switch (buttonFilter.column) {
-      case 'population': return result.population;
-      case 'orbital_period': return result.orbital_period;
-      case 'diameter': return result.diameter;
-      case 'rotation_period': return result.rotation_period;
-      default: return result.surface_water;
-      }
-    };
+  const [buttonFilter, setButtonFilter] = useState([]);
 
-    const maiorQue = results
-      .filter((result) => +switchColumn(result) > +buttonFilter.value)
-      .filter((unk) => switchColumn(unk) !== 'unknown');
-    const menorQue = results
-      .filter((result) => +switchColumn(result) < +buttonFilter.value);
-    const igualA = results
-      .filter((result) => +switchColumn(result) === +buttonFilter.value);
-
-    if (buttonFilter.isClick) {
-      // setRenderFilters((prevState) => ({
-      //   ...prevState,
-      //   list: [buttonFilter],
-      // }));
-      console.log('entrei');
-      switch (buttonFilter.comparison) {
-      case 'menor que': return menorQue;
-      case 'igual a': return igualA;
-      default: return maiorQue;
-      }
-    } else {
-      return results;
-    }
+  const handleClick = () => {
+    setButtonFilter((prevState) => ([...prevState, {
+      column: filterColumn,
+      comparison: comparisonFilter,
+      value: filterValue,
+    }]));
+    setRenderFilters(results);
   };
 
-  console.log(filterNumberSwitch());
+  useEffect(() => {
+    const namesFilter = results
+      .filter((e) => e.name.toUpperCase().includes(filterName.toUpperCase()));
+    setInputFilterName(namesFilter);
+  }, [filterName, results]);
 
-  const namesFilter = filterNumberSwitch()
-    .filter((e) => e.name.toUpperCase().includes(filterName.toUpperCase()));
+  useEffect(() => {
+    buttonFilter.forEach((filt) => {
+      let planFilter = [];
+
+      console.log(renderFilters);
+
+      switch (filt.comparison) {
+      case 'maior que': planFilter = renderFilters
+        .filter((result) => +result[filt.column] > +filt.value
+         && result[filt.column] !== 'unknown');
+        setRenderFilters(planFilter);
+        break;
+      case 'menor que': planFilter = renderFilters
+        .filter((result) => +result[filt.column] < +filt.value);
+        setRenderFilters(planFilter);
+        break;
+      case 'igual a': planFilter = renderFilters
+        .filter((result) => +result[filt.column] === +filt.value);
+        setRenderFilters(planFilter);
+        break;
+      default: break;
+      }
+    });
+  }, [buttonFilter]);
+
+  console.log(renderFilters);
+
+  const changeFilter = buttonFilter.length === 0 ? inputFilterName : renderFilters;
 
   return (
     <div>
@@ -99,12 +101,7 @@ function StarWarsTable() {
           />
         </label>
         <button
-          onClick={ () => setButtonFilter({
-            column: filterColumn,
-            comparison: comparisonFilter,
-            value: filterValue,
-            isClick: true,
-          }) }
+          onClick={ handleClick }
           data-testid="button-filter"
           type="button"
         >
@@ -131,7 +128,7 @@ function StarWarsTable() {
           </tr>
         </thead>
         <tbody>
-          { namesFilter.map((result, i) => (
+          { changeFilter.map((result, i) => (
             <tr key={ i }>
               <td>{result.name}</td>
               <td>{result.rotation_period}</td>
