@@ -2,9 +2,23 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import App from '../App';
 import userEvent from '@testing-library/user-event';
+import requestData from './helps/data'
+
+
+describe('Tests components', () => {
+
+  // beforeEach(() => {
+  //   global.fetch = jest.fn(async () => Promise.resolve({
+  //       json: async () => Promise.resolve(requestData),
+  //   }));
+  // })
 
 test('I am your test', async () => {
-  render(<App />);
+  // global.fetch = jest.fn(async () => Promise.resolve({
+  //     json: async () => Promise.resolve(requestData),
+  //   }));
+    render(<App />);
+
   const textElement = screen.getByText(/rotation period/i);
   expect(textElement).toBeInTheDocument();
 
@@ -21,14 +35,23 @@ test('I am your test', async () => {
 
   userEvent.click(buttonFilter);
 
-  const selectedFilter1 = screen.getByRole('option', { name: /maior que/i })
-  const selectedFilter2 = screen.getByRole('option', { name: /menor que/i })
-  const selectedFilter3 = screen.getByRole('option', { name: /igual a/i })
 
-  userEvent.click(selectedFilter1);
-  userEvent.click(selectedFilter2);
-  userEvent.click(selectedFilter3);
+  const selectedComparison = screen.getByTestId('comparison-filter');
+  
 
+  userEvent.selectOptions(selectedComparison, 'menor que');
+
+  const selectColumn = screen.getByTestId('column-filter');
+
+  userEvent.selectOptions(selectColumn, 'rotation_period');
+
+  userEvent.click(buttonFilter);
+
+  userEvent.selectOptions(selectedComparison, 'igual a');
+
+  userEvent.selectOptions(selectColumn, 'surface_water');
+
+  userEvent.click(buttonFilter);
 
   // const textNotFilter = await screen.findByText('Endor');
 
@@ -38,21 +61,19 @@ test('I am your test', async () => {
 test('', () => {
   render(<App />);
 
-  const selectedFilter1 = screen.getByRole('option', { name: /maior que/i })
-  // const selectedFilter2 = screen.getByRole('option', { name: /menor que/i })
-  // const selectedFilter3 = screen.getByRole('option', { name: /igual a/i })
+  const selectedFilter1 = screen.getByRole('option', { name: /maior que/i });
 
   expect(selectedFilter1).toBeInTheDocument();
 
   userEvent.click(selectedFilter1);
-  // userEvent.click(selectedFilter2);
-  // userEvent.click(selectedFilter3);
 
-  const selectedColumn = screen.getByRole('option', { name: /population/i })
+  const selectedColumn = screen.getByRole('option', { name: /population/i });
 
   expect(selectedColumn).toBeInTheDocument();
 
   userEvent.click(selectedColumn);
 
+
+})
 
 })

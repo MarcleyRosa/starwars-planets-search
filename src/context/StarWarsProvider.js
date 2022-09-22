@@ -11,6 +11,7 @@ function StarWarsProvider({ children }) {
       const json = await response.json();
       const filterResults = json.results;
       const removeResidents = filterResults.filter((resp) => delete resp.residents);
+      console.log(removeResidents);
       setResults(removeResidents);
     };
     requestAPI();
