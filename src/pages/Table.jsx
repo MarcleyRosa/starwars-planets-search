@@ -8,19 +8,31 @@ function StarWarsTable() {
   const [comparisonFilter, setComparisonFilter] = useState('maior que');
   const [filterValue, setFilterValue] = useState(0);
 
-  const [renderFilters, setRenderFilters] = useState([]);
+  const [renderFilters, setRenderFilters] = useState();
   const [inputFilterName, setInputFilterName] = useState(results);
 
   const [buttonFilter, setButtonFilter] = useState([]);
+  const [filterOptions, setFilterOptions] = useState([
+    'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water']);
 
   const handleClick = () => {
+    const optionFilter = filterOptions.filter((opt) => opt !== filterColumn);
+    setFilterOptions(optionFilter);
+    // const equalObj = buttonFilter
+    //   .some((obj) => obj.column === filterColumn
+    //  && obj.comparison === comparisonFilter && obj.value === filterValue);
+
     setButtonFilter((prevState) => ([...prevState, {
       column: filterColumn,
       comparison: comparisonFilter,
       value: filterValue,
     }]));
-    setRenderFilters(results);
   };
+
+  useEffect(() => {
+    setRenderFilters(results);
+    console.log('entreiaaaa');
+  }, [results]);
 
   useEffect(() => {
     const namesFilter = results
@@ -31,8 +43,6 @@ function StarWarsTable() {
   useEffect(() => {
     buttonFilter.forEach((filt) => {
       let planFilter = [];
-
-      console.log(renderFilters);
 
       switch (filt.comparison) {
       case 'maior que': planFilter = renderFilters
@@ -75,11 +85,12 @@ function StarWarsTable() {
           data-testid="column-filter"
           value={ filterColumn }
         >
-          <option value="population">population</option>
-          <option value="orbital_period">orbital_period</option>
+          { filterOptions
+            .map((option, i) => <option key={ i } value={ option }>{option}</option>)}
+          {/* <option value="orbital_period">orbital_period</option>
           <option value="diameter">diameter</option>
           <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
+          <option value="surface_water">surface_water</option> */}
         </select>
         <select
           onChange={ ({ target: { value } }) => setComparisonFilter(value) }
