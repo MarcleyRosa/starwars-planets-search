@@ -32,6 +32,7 @@ function StarWarsSort() {
       ));
     filterUnknown.map((e) => mapFilter.push(e));
     setRenderPlanets(mapFilter);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterOrd]);
 
   return (

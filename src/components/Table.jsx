@@ -10,7 +10,7 @@ function StarWarsTable() {
     'Gravity', 'Terrain', 'Surface Water', 'Population', 'Films',
     'Created', 'Edited', 'Url'];
 
-  const { results, filterOrd, buttonFilter, setButtonFilter, renderPlanets,
+  const { results, buttonFilter, setButtonFilter, renderPlanets,
     setRenderPlanets, inputFilterName, setInputFilterName, renderFilters,
     setRenderFilters } = useContext(StarWarsContext);
   const [filterName, setFilterName] = useState('');
@@ -35,7 +35,6 @@ function StarWarsTable() {
   };
 
   const removeFilter = ({ target: { id } }) => {
-    console.log(id);
     const filterRemova = buttonFilter.filter((filter) => filter.column !== id);
     setButtonFilter(filterRemova);
     setFilterOptions((prevState) => ([...prevState, id]));
@@ -49,20 +48,19 @@ function StarWarsTable() {
 
   useEffect(() => {
     setRenderFilters(results);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [results]);
 
   useEffect(() => {
     const namesFilter = results
       .filter((e) => e.name.toUpperCase().includes(filterName.toUpperCase()));
     setInputFilterName(namesFilter);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterName, results]);
 
   useEffect(() => {
     buttonFilter.forEach((filt) => {
       let planFilter = [];
-
-      console.log(filt.comparison);
-      console.log(filt.column);
 
       switch (filt.comparison) {
       case 'maior que': planFilter = renderFilters
@@ -74,20 +72,19 @@ function StarWarsTable() {
         .filter((result) => +result[filt.column] < +filt.value);
         setRenderFilters(planFilter);
         break;
-      case 'igual a': planFilter = renderFilters
+      default: planFilter = renderFilters
         .filter((result) => +result[filt.column] === +filt.value);
         setRenderFilters(planFilter);
         break;
-      default: break;
       }
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buttonFilter]);
-
-  console.log(filterOrd);
 
   useEffect(() => {
     const changeFilter = buttonFilter.length === 0 ? inputFilterName : renderFilters;
     setRenderPlanets(changeFilter);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputFilterName, renderFilters, buttonFilter]);
 
   return (
@@ -169,7 +166,6 @@ function StarWarsTable() {
         <tbody>
           { renderPlanets.map((result, i) => (
             <tr key={ i }>
-              {/* { changeFilter.map((e, index) => <td key={ index }>{Object.values(e)}</td>)} */}
               <td data-testid="planet-name">{result.name}</td>
               <td>{result.rotation_period}</td>
               <td>{result.orbital_period}</td>
