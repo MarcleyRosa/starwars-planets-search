@@ -1,20 +1,23 @@
 import React, { useContext, useState, useEffect } from 'react';
 import StarWarsContext from '../context/StarWarsContext';
+import StarWarsSort from './FilterSort';
 
 function StarWarsTable() {
   const columnAll = [
     'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water'];
 
-  const { results } = useContext(StarWarsContext);
+  const tableHeader = ['Name', 'Rotation Period', 'Orbital Period', 'Diameter', 'Climate',
+    'Gravity', 'Terrain', 'Surface Water', 'Population', 'Films',
+    'Created', 'Edited', 'Url'];
+
+  const { results, filterOrd, buttonFilter, setButtonFilter, renderPlanets,
+    setRenderPlanets, inputFilterName, setInputFilterName, renderFilters,
+    setRenderFilters } = useContext(StarWarsContext);
   const [filterName, setFilterName] = useState('');
   const [filterColumn, setFilterComumn] = useState('population');
   const [comparisonFilter, setComparisonFilter] = useState('maior que');
   const [filterValue, setFilterValue] = useState(0);
 
-  const [renderFilters, setRenderFilters] = useState();
-  const [inputFilterName, setInputFilterName] = useState(results);
-
-  const [buttonFilter, setButtonFilter] = useState([]);
   const [filterOptions, setFilterOptions] = useState(columnAll);
 
   const handleClick = () => {
@@ -80,7 +83,12 @@ function StarWarsTable() {
     });
   }, [buttonFilter]);
 
-  const changeFilter = buttonFilter.length === 0 ? inputFilterName : renderFilters;
+  console.log(filterOrd);
+
+  useEffect(() => {
+    const changeFilter = buttonFilter.length === 0 ? inputFilterName : renderFilters;
+    setRenderPlanets(changeFilter);
+  }, [inputFilterName, renderFilters, buttonFilter]);
 
   return (
     <div>
@@ -151,28 +159,18 @@ function StarWarsTable() {
           Remover
 
         </button>)}
+      <StarWarsSort />
       <table>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Rotation Period</th>
-            <th>Orbital Period</th>
-            <th>Diameter</th>
-            <th>Climate</th>
-            <th>Gravity</th>
-            <th>Terrain</th>
-            <th>Surface Water</th>
-            <th>Population</th>
-            <th>Films</th>
-            <th>Created</th>
-            <th>Edited</th>
-            <th>Url</th>
+            { tableHeader.map((th, i) => <th key={ i }>{th}</th>)}
           </tr>
         </thead>
         <tbody>
-          { changeFilter.map((result, i) => (
+          { renderPlanets.map((result, i) => (
             <tr key={ i }>
-              <td>{result.name}</td>
+              {/* { changeFilter.map((e, index) => <td key={ index }>{Object.values(e)}</td>)} */}
+              <td data-testid="planet-name">{result.name}</td>
               <td>{result.rotation_period}</td>
               <td>{result.orbital_period}</td>
               <td>{result.diameter}</td>

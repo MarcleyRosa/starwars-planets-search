@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import StarWarsProvider from './context/StarWarsProvider';
-import Table from './pages/Table';
+import Table from './components/Table';
 
 function App() {
   return (

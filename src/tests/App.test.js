@@ -2,23 +2,20 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import App from '../App';
 import userEvent from '@testing-library/user-event';
-import requestData from './helps/data'
 import mockFetch from '../../cypress/mocks/fetch';
+import testData from '../../cypress/mocks/testData';
 
 
 
 describe('Tests components', () => {
 
-  // beforeEach(() => {
-  //   global.fetch = jest.fn(async () => Promise.resolve({
-  //       json: async () => Promise.resolve(requestData),
-  //   }));
-  // })
+  beforeEach(() => {
+    global.fetch = jest.fn(async () => Promise.resolve({
+        json: async () => Promise.resolve(testData),
+    }));
+  })
 
 test('I am your test', async () => {
-  // global.fetch = jest.fn(async () => Promise.resolve({
-  //     json: async () => Promise.resolve(testData),
-  //   }));
   mockFetch()
     render(<App />);
 
@@ -70,13 +67,34 @@ test('', () => {
 
   userEvent.click(selectedFilter1);
 
-  const selectedColumn = screen.getByRole('option', { name: /population/i });
+})
+test('Test component sort', () => {
+  render(<App />);
+  const selectedSort = screen.getByTestId('column-sort');
 
-  expect(selectedColumn).toBeInTheDocument();
+  expect(selectedSort).toBeInTheDocument();
 
-  userEvent.click(selectedColumn);
+  userEvent.selectOptions(selectedSort, 'diameter');
+
+  const checkboxSortAsc = screen.getByLabelText('Ascendente')
+
+  expect(checkboxSortAsc).toBeInTheDocument();
+
+  userEvent.click(checkboxSortAsc);
+
+  const buttonSort = screen.getByRole('button', { name: 'Ordenar'})
+
+  expect(buttonSort).toBeInTheDocument();
+
+  userEvent.click(buttonSort);
 
 
+
+  const checkboxSortDesc = screen.getByLabelText('Descendente')
+
+  expect(checkboxSortDesc).toBeInTheDocument();
+
+  userEvent.click(checkboxSortDesc);
 })
 
 })
